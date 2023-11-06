@@ -9,7 +9,13 @@ data Board = Board Int [Cell] deriving (Eq, Show)
 
 -- | Returns an empty board with sides of the given length
 emptyBoard :: Int -> Board
-emptyBoard = undefined
+emptyBoard 0 = Board 0 []
+emptyBoard side = helper [Empty] (side*side)
+  where
+    helper :: [Cell] -> Int -> Board
+    helper cells count
+      | count == 1 = Board side cells
+      | otherwise = helper (Empty:cells) (count - 1)
 
 -- | Returns the rows of a given board.
 rows :: Board -> [[Cell]]
