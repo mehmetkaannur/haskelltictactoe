@@ -8,11 +8,14 @@ import Helpers
 
 import Text.Read (readMaybe)
 import Data.List (intersperse)
+import Control.Monad (forM_)
 
 import System.IO (hSetBuffering, stdout, stdin, BufferMode(NoBuffering))
 
 prettyPrint :: Board -> IO ()
-prettyPrint = undefined
+prettyPrint board = forM_ row_list (putStrLn.show)
+  where
+    row_list = rows board
 
 -- The following reflect the suggested structure, but you can manage the game
 -- in any way you see fit.

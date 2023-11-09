@@ -24,23 +24,28 @@ gameOver board = helper(rows board) || helper(cols board) || helper(diags board)
 -- separated by whitespace. Bounds checking happens in tryMove, not here.
 --
 parsePosition :: String -> Maybe Position
-parsePosition x = helper(readMaybe (space x) :: Maybe Int)
-  where
-    space :: String -> String
-    space [] = []
-    space (a:as)
-      | a == ' ' || a == '-'= space as
-      | otherwise = a : space as
-    
-    helper :: Maybe Int -> Maybe Position
-    helper Nothing = Nothing
-    helper (Just a)
-      | length (show a) /= 2 = Nothing
-      | otherwise = Just (first, second)
+parsePosition x = position
       where
-        first = read (takeWhile (/= ' ') x) :: Int
-        second = read (dropWhile (/= ' ') x) :: Int
+        first = (takeWhile (/= ' ') x)
+        second = (dropWhile (/= ' ') x)
+        final = "(" ++ first ++ "," ++ second ++ ")"
+        position = readMaybe final :: Maybe (Int, Int)
 
+replacer :: Int -> Cell -> Board -> Board
+replacer index new_square (Board n table) = (Board n (helper index 0 new_square table))
+  where
+    helper :: Int -> Int -> Cell -> [Cell] -> [Cell]
+    helper _ _ _ [] = []
+    helper index num new_square (x:xs)
+      | index == num = new_square:xs
+      | otherwise = x:(helper index (num+1) new_square xs)
 
 tryMove :: Player -> Position -> Board -> Maybe Board
-tryMove = undefined
+tryMove ltr (a,b) table@(Board n cs)
+  | a < 0 || b < 0 = Nothing
+  |square == Empty = Just (replacer index new_square table)
+  | otherwise = Nothing
+  where
+    index = (a*n+b)
+    square = cs !! index
+    new_square = Taken ltr
